@@ -1,0 +1,97 @@
+/* Page wrapper */
+.report-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f4f6;
+  padding: 20px;
+}
+
+/* Card container */
+.report-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.report-header {
+  background-color: #ef4444; /* red shade */
+  padding: 20px;
+  text-align: center;
+}
+
+.report-header h1 {
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Form */
+.report-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827; /* dark text */
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9fafb;
+}
+
+.form-group textarea {
+  min-height: 80px;
+  resize: none;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.attach-button {
+  flex: 1;
+  padding: 10px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-button {
+  flex: 1;
+  padding: 10px;
+  background-color: #0ea5e9; /* sky blue */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0284c7;
+}

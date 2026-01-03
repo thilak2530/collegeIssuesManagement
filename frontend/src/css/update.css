@@ -1,0 +1,137 @@
+/* Page layout */
+
+
+.manage-users-card {
+    
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  max-width: 800px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.page-header {
+  background-color: #06b6d4;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.profile-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #fde68a;
+  color: #92400e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Table */
+.table-container {
+  padding: 20px;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.users-table th {
+  background-color: #f8fafc;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.users-table td {
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+.edit-btn {
+  background-color: #06b6d4;
+  color: white;
+}
+
+.block-btn {
+  background-color: #f43f5e;
+  color: white;
+}
+
+.update-btn {
+  background-color: #06b6d4;
+  color: white;
+  padding: 8px 30px;
+  margin-top: 10px;
+}
+
+/* Status section */
+.status-section {
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.status-select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+}
+.status.resolved {
+  background-color: #10b981;
+}
+
+.status.pending {
+  background-color: #f59e0b;
+}
