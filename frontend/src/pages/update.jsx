@@ -1,8 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../css/update.css";
+import axios from "axios";
+
 
 const Update = (props) => {
+  const [refIds,setReIds]=useState([]);
+  const [selectedStaff, setSelectedStaff] = useState("");
+  const token = localStorage.getItem("token");
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
+
+
+
+  const handleAssign = () => {
+    if (!selectedStaff) {
+      alert("Please select staff");
+      return;
+    }
+
+    axios.patch(
+      `${BASE_URL}/issues/assign`,
+       {
+        issueId: props.id,
+        assignedMem: selectedStaff
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    )
+    .then(() => {
+      alert("Staff assigned successfully");
+       props.onClose();
+       props.onsucess();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Assignment failed");
+    });
+  };
+
+  useEffect(()=>{
+        axios.get(`${BASE_URL}/staffRefIds`,{
+          headers:{
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        })
+        .then((res)=>{setReIds(res.data)})
+        .catch(err=>{console.error("Login failed:", err);})
+    },[token,BASE_URL])
   return (
+
     <div className="manage-users-card">
         {/* Users Table */}
         <div className={"table-container"}>
@@ -35,16 +85,28 @@ const Update = (props) => {
 
           <div className="status-row">
             <label>Select staff mem</label>
-            <select className="status-select">
-              <option>resolved</option>
-              <option>Pending</option>
+            <select
+              className="status-select"
+              value={selectedStaff}
+              onChange={(e) => setSelectedStaff(e.target.value)}
+              >
+              <option value="">-- Select Staff --</option>
+              {refIds.map((refid, index) => (
+                <option key={index} value={refid}>
+                  {refid}
+                </option>
+              ))} 
             </select>
           </div>
 
-          <button className="btn update-btn">Assign</button>
+         <button className="btn update-btn" onClick={handleAssign}>
+            Assign
+          </button>
+          
         </div>
 
       </div>
+      
   );
 };
 

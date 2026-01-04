@@ -5,6 +5,8 @@ import com.practise.security.Repo.UserRepo;
 import com.practise.security.Repo.issueRepo;
 import com.practise.security.model.IssueTable;
 import com.practise.security.model.Users;
+import com.practise.security.responcedto.staffRecordResponce;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,6 +24,7 @@ public class issueService {
 
     @Autowired
     private issueRepo repo;
+
     public ResponseEntity<IssueTable> issue(RaiseIssuedto dto) {
 
         Authentication auth =
@@ -37,7 +41,8 @@ public class issueService {
         issuedto.setDescription(dto.getDescription());
         issuedto.setLocation(dto.getLocation());
         issuedto.setStatus("Pending");   // ✅ default status
-        issuedto.setAssigned("NotAssigned");
+        issuedto.setAssigned("Unassigned");
+        issuedto.setAssignedMem("");
         issuedto.setUser(user);
 
         IssueTable savedIssue = repo.save(issuedto);
@@ -53,5 +58,29 @@ public class issueService {
         data.put("totalUsers",userRepo.totalUsers());
 
         return data;
+    }
+
+    public List<staffRecordResponce> staffrecords(Authentication authentication) {
+        String username = authentication.getName();
+        String refId=username.toUpperCase();
+        List<IssueTable> issues = repo.Records(refId);
+        return issues.stream()
+                .map(i -> new staffRecordResponce(
+                        i.getId(),
+                        i.getUser().getRefId(),   // refId
+                        i.getTitle(),
+                        i.getStatus(),
+                        i.getLocation()
+                ))
+                .toList();
+    }
+    @Transactional //transaction automatically save
+    public void assignstaff(int issueId, String assignedMem) {
+
+        IssueTable issue = repo.findById(issueId)
+                .orElseThrow(() -> new RuntimeException("Issue not found"));
+
+        issue.setAssignedMem(assignedMem);
+        issue.setAssigned("Assigned");
     }
 }

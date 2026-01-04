@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import "../css/staffpage.css";
 import Update from "./update";
 import { XCircle } from "lucide-react";
 import Box from "../components/box";
+import axios from "axios";
+
 
 
 const DashboardPage = () => {
+  
+  const token = localStorage.getItem("token");
+  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
+  const [issues,setIssues]=useState([]);
+
+
+
+  useEffect(()=>{
+
+     axios
+    .get(`${BASE_URL}/staffrecords`,{
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    .then((res) => {;setIssues(res.data)})
+    .catch(console.error);
+
+  },[BASE_URL,token]);
+
+
 
 
     
@@ -18,33 +42,7 @@ const DashboardPage = () => {
   });
 
     const [updatetrue,setupdatetrue]=useState(false);
-    const issues = [
-    {
-      id: "3000003",
-      title: "Fan not working",
-      status: "resolved",
-      room: "Room 204",
-    },
-    {
-      id: "3000024",
-      title: "Electrical issue",
-      status: "pending",
-      room: "Room 204",
-    },
-    {
-      id: "3000435",
-      title: "Ceiling issue",
-      status: "resolved",
-      room: "Room 209",
-    },
-    {
-      id: "3000015",
-      title: "Tubelight issue",
-      status: "resolved",
-      room: "Room 209",
-    },
-  ];
-
+    
   return (
      <>
         <div className={updatetrue ? "page blur" :"dashboard-page"}>
@@ -109,24 +107,24 @@ const DashboardPage = () => {
                         key={issue.id}
                         onClick={()=>{setupdatetrue(true);
                            setFormData({
-                                id: issue.id,
+                                id: issue.refId,
                                 title: issue.title,
                                 status: issue.status,
-                                roomno: issue.room,
+                                roomno: issue.roomno,
                             });
                          }
 
                         }
                         
                     >
-                        <td>{issue.id}</td>
+                        <td>{issue.refId}</td>
                         <td>{issue.title}</td>
                         <td>
                         <span className={`status ${issue.status}`}>
                             {issue.status}
                         </span>
                         </td>
-                        <td>{issue.room}</td>
+                        <td>{issue.roomno}</td>
                     </tr>
                     ))}
                 </tbody>

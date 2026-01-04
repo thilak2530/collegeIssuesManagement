@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../css/adminpage.css";
 import Update from "./update";
 import { XCircle } from "lucide-react";
@@ -27,21 +27,19 @@ const Admin = () => {
   });
   const [issues,setIssues]=useState([])
 
-  useEffect(()=>{
 
-     axios
-    .get(`${BASE_URL}/data`,{
+  const fetchAdminData = useCallback(() => {
+         axios.get(`${BASE_URL}/data`,{
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     })
-    .then((res) => {setNumData(res.data);console.log(res.data)})
+    .then((res) => {setNumData(res.data);})
     .catch(console.error);
 
 
-     axios
-    .get(`${BASE_URL}/totalIssues`,{
+    axios.get(`${BASE_URL}/totalIssues`,{
       headers: {
         "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
@@ -49,7 +47,12 @@ const Admin = () => {
     })
     .then((res) => {setIssues(res.data);})
     .catch(console.error);
-  },[BASE_URL,token]);
+
+  },[BASE_URL,token])
+
+  useEffect(()=>{
+      fetchAdminData();
+  },[fetchAdminData]);
 
     const [updatetrue,setupdatetrue]=useState(false);
     
@@ -125,8 +128,9 @@ const Admin = () => {
                     <tr
                         key={issue.id}
                         onClick={()=>{setupdatetrue(true);
+                         
                            setFormData({
-                                id: issue.user.refId,
+                                id: issue.id,
                                 title: issue.title,
                                 status: issue.status,
                                 roomno: issue.location,
@@ -169,6 +173,8 @@ const Admin = () => {
                 title={formData.title}
                 statuss={formData.status}
                 roomno={formData.roomno}
+                onClose={() => setupdatetrue(false)}
+                onsucess={fetchAdminData}
 
                 
             />
