@@ -40,7 +40,7 @@ public class issueService {
         issuedto.setCategory(dto.getCategory());
         issuedto.setDescription(dto.getDescription());
         issuedto.setLocation(dto.getLocation());
-        issuedto.setStatus("Pending");   // ✅ default status
+        issuedto.setStatus("pending");   // ✅ default status
         issuedto.setAssigned("Unassigned");
         issuedto.setAssignedMem("");
         issuedto.setUser(user);
@@ -66,6 +66,7 @@ public class issueService {
         List<IssueTable> issues = repo.Records(refId);
         return issues.stream()
                 .map(i -> new staffRecordResponce(
+
                         i.getId(),
                         i.getUser().getRefId(),   // refId
                         i.getTitle(),
@@ -82,5 +83,21 @@ public class issueService {
 
         issue.setAssignedMem(assignedMem);
         issue.setAssigned("Assigned");
+    }
+
+    public Map<String, Long> staffdetailbox(String refId) {
+        String refid = refId.toUpperCase();
+        Map<String,Long> data = new HashMap<>();
+        data.put("totalresolved",repo.countByAssignedMemAndStatus(refid,"resolved"));
+        data.put("totalpending",repo.countByAssignedMemAndStatus(refid,"pending"));
+        data.put("totalissues",repo.countByAssignedMem(refid));
+
+
+        return data;
+    }
+    @Transactional
+    public void statusUpdate(int id, String status) {
+        IssueTable record=repo.findById(id).orElseThrow(()-> new RuntimeException("not found user"));
+        record.setStatus(status);
     }
 }

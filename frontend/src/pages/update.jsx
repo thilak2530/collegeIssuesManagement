@@ -1,56 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../css/update.css";
-import axios from "axios";
+
 
 
 const Update = (props) => {
-  const [refIds,setReIds]=useState([]);
-  const [selectedStaff, setSelectedStaff] = useState("");
-  const token = localStorage.getItem("token");
-  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
-
-
-  const handleAssign = () => {
-    if (!selectedStaff) {
-      alert("Please select staff");
-      return;
-    }
-
-    axios.patch(
-      `${BASE_URL}/issues/assign`,
-       {
-        issueId: props.id,
-        assignedMem: selectedStaff
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      }
-    )
-    .then(() => {
-      alert("Staff assigned successfully");
-       props.onClose();
-       props.onsucess();
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Assignment failed");
-    });
-  };
-
-  useEffect(()=>{
-        axios.get(`${BASE_URL}/staffRefIds`,{
-          headers:{
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        })
-        .then((res)=>{setReIds(res.data)})
-        .catch(err=>{console.error("Login failed:", err);})
-    },[token,BASE_URL])
   return (
 
     <div className="manage-users-card">
@@ -68,7 +22,7 @@ const Update = (props) => {
 
             <tbody>
               <tr>
-                <td>{props.id}</td>
+                <td>{props.refId}</td>
                 <td>{props.title}</td>
                 <td><span className={`status ${props.statuss}`}>{props.statuss}</span></td>
                 <td>{props.roomno}</td>
@@ -81,17 +35,17 @@ const Update = (props) => {
 
         {/* Status Update Section */}
         <div className="status-section">
-          <h3 className="section-title">Assign Staff</h3>
+          <h3 className="section-title">{"select "+props.text}</h3>
 
           <div className="status-row">
-            <label>Select staff mem</label>
+            <label>{props.text}</label>
             <select
               className="status-select"
-              value={selectedStaff}
-              onChange={(e) => setSelectedStaff(e.target.value)}
+              value={props.selectedStaff}
+              onChange={(e) => props.setSelectedStaff(e.target.value)}
               >
-              <option value="">-- Select Staff --</option>
-              {refIds.map((refid, index) => (
+              <option value="">-- Select --</option>
+              {props.refIds.map((refid, index) => (
                 <option key={index} value={refid}>
                   {refid}
                 </option>
@@ -99,7 +53,7 @@ const Update = (props) => {
             </select>
           </div>
 
-         <button className="btn update-btn" onClick={handleAssign}>
+         <button className="btn update-btn" onClick={props.onrequest}>
             Assign
           </button>
           

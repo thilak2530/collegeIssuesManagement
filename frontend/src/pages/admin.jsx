@@ -7,14 +7,17 @@ import axios from "axios";
 
 
 const Admin = () => {
-
+  const [refIds,setReIds]=useState([]);
+  const [selectedStaff, setSelectedStaff] = useState("");
   const token = localStorage.getItem("token");
   const BASE_URL = process.env.REACT_APP_BACKEND_URL;
   const [formData, setFormData] = useState({
     id: "",
+    refId:"",
     title: "",
     status: "",
     roomno: "",
+    refIds:[]
    
   });
   const [numData, setNumData] = useState({
@@ -26,6 +29,39 @@ const Admin = () => {
    
   });
   const [issues,setIssues]=useState([])
+
+
+
+    const handleAssign = () => {
+      if (!selectedStaff) {
+        alert("Please select staff");
+        return;
+      }
+  
+      axios.patch(
+        `${BASE_URL}/issues/assign`,
+         {
+          issueId: formData.id,
+          assignedMem: selectedStaff
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
+      .then(() => {
+        alert("Staff assigned successfully");
+         
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Assignment failed");
+      });
+    };
+
+
 
 
   const fetchAdminData = useCallback(() => {
@@ -52,7 +88,15 @@ const Admin = () => {
 
   useEffect(()=>{
       fetchAdminData();
-  },[fetchAdminData]);
+       axios.get(`${BASE_URL}/staffRefIds`,{
+          headers:{
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        })
+        .then((res)=>{setReIds(res.data)})
+        .catch(err=>{console.error("Login failed:", err);})
+  },[fetchAdminData,BASE_URL,token]);
 
     const [updatetrue,setupdatetrue]=useState(false);
     
@@ -131,6 +175,7 @@ const Admin = () => {
                          
                            setFormData({
                                 id: issue.id,
+                                refId:issue.user.refId,
                                 title: issue.title,
                                 status: issue.status,
                                 roomno: issue.location,
@@ -169,12 +214,18 @@ const Admin = () => {
           
             <Update 
                 
-                id={formData.id}
+              
+                refId={formData.refId}
+                refIds={refIds}
                 title={formData.title}
                 statuss={formData.status}
                 roomno={formData.roomno}
+                text="staff"
                 onClose={() => setupdatetrue(false)}
                 onsucess={fetchAdminData}
+                onrequest={()=>handleAssign()}
+                selectedStaff={selectedStaff}
+                setSelectedStaff={setSelectedStaff}
 
                 
             />

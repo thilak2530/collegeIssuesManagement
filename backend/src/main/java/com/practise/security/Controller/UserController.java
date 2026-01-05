@@ -3,6 +3,7 @@ package com.practise.security.Controller;
 
 import com.practise.security.DTO.RaiseIssuedto;
 import com.practise.security.DTO.assignStaffdto;
+import com.practise.security.DTO.updateStatusdto;
 import com.practise.security.Repo.issueRepo;
 import com.practise.security.model.IssueTable;
 import com.practise.security.model.Users;
@@ -70,9 +71,25 @@ public class UserController {
 
     @PatchMapping("/issues/assign")
     public ResponseEntity<Void> assignstaff(@RequestBody assignStaffdto body){
-        System.out.println("id id:"+body.getIssueId());
         issueservice.assignstaff(body.getIssueId(), body.getAssignedMem());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/staffdetailboxs")
+    public ResponseEntity<Map<String , Long>> staffdetailbox(Authentication authentication){
+        String refId=authentication.getName();
+        System.out.println("ref id isssssss"+authentication.getName());
+        Map<String,Long> data=issueservice.staffdetailbox(refId);
+
+        return ResponseEntity.ok(data);
+    }
+
+    @PatchMapping("/status/update")
+    public ResponseEntity<Void> updateStatus(@RequestBody updateStatusdto body){
+        System.out.println(body.getId());
+        issueservice.statusUpdate(body.getId(),body.getStatus());
+        return ResponseEntity.ok().build();
+
     }
 
 }

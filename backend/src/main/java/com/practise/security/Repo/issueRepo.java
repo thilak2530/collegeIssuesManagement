@@ -22,5 +22,9 @@ public interface issueRepo extends JpaRepository<IssueTable,Integer> {
     @Query("SELECT i FROM IssueTable i WHERE i.assignedMem = :refId")
     List<IssueTable> Records(@Param("refId") String refId);
 
+    long countByAssignedMemAndStatus(String assignedMem, String status);
+
+    long countByAssignedMem(String assignedMem);
+
 
 }
