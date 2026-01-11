@@ -12,7 +12,15 @@ public class IssueTable {
     private String assigned;
     private String category;
     private String location;
+    private String assignedMem;
 
+    public String getAssignedMem() {
+        return assignedMem;
+    }
+
+    public void setAssignedMem(String assignedMem) {
+        this.assignedMem = assignedMem;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
