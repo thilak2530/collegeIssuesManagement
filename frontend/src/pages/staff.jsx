@@ -104,7 +104,9 @@ const DashboardPage = () => {
 
             {/* Header */}
             <div className="dashboard-header">
+
             <h2 className="dashboard-title">Welcome</h2>
+
 
             </div>
 
