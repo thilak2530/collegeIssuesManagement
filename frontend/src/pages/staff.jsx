@@ -104,10 +104,10 @@ const DashboardPage = () => {
 
             {/* Header */}
             <div className="dashboard-header">
-            <h2 className="dashboard-title">Welcome </h2>
-            <div className="dashboard-icons">
-                <div className="profile-circle">J</div>
-            </div>
+
+            <h2 className="dashboard-title">Welcome</h2>
+
+
             </div>
 
             {/* Content */}
