@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_URL: jdbc:postgresql://host.docker.internal:5432/Collegemanagement
-      DB_USERNAME: postgres
-      DB_PASSWORD: 2530
+      DB_URL: jdbc:postgresql://ep-red-waterfall-ahgls7ur-pooler.c-3.us-east-1.aws.neon.tech:5432/neondb?sslmode=require
+      DB_USERNAME: neondb_owner
+      DB_PASSWORD: npg_o8nOWb4sXPim
     restart: unless-stopped
