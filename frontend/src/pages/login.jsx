@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
 import "../css/app.css";
 import axios from "axios";
+import {getUserRole} from "../utils/auth";
 
 function App() {
 
@@ -21,7 +22,12 @@ function App() {
     })
     .then((response) => {
       localStorage.setItem("token",response.data);
-      navigate("/raise_issue");
+          
+      const role = getUserRole();
+      console.log("User role:", role);
+      if (role === "admin") navigate("/adminpage");
+      else if (role === "staff"){ navigate("/staffpage"); }
+      else navigate("/raise_issue");
     })
     .catch(error => {
         alert("incorrect credentials");
