@@ -9,13 +9,15 @@ public class staffRecordResponce {
     private String title;
     private String status;
     private String roomno;
+    private String imageData;
 
-    public staffRecordResponce(int id, String refId, String title, String status, String roomno) {
+    public staffRecordResponce(int id, String refId, String title, String status, String roomno,String imageData) {
         this.id=id;
         this.refId = refId;
         this.title = title;
         this.status = status;
         this.roomno = roomno;
+        this.imageData=imageData;
     }
 
     public String getRefId() {
@@ -36,5 +38,9 @@ public class staffRecordResponce {
 
     public String getRoomno() {
         return roomno;
+    }
+
+    public String getImageData() {
+        return imageData;
     }
 }

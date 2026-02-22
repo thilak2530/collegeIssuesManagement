@@ -3,6 +3,7 @@ package com.practise.security.Controller;
 
 import com.practise.security.DTO.RaiseIssuedto;
 import com.practise.security.DTO.assignStaffdto;
+import com.practise.security.DTO.totalIssuesdto;
 import com.practise.security.DTO.updateStatusdto;
 import com.practise.security.Repo.issueRepo;
 import com.practise.security.model.IssueTable;
@@ -11,9 +12,11 @@ import com.practise.security.responcedto.staffRecordResponce;
 import com.practise.security.service.UserService;
 import com.practise.security.service.issueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -42,13 +45,23 @@ public class UserController {
 
         return userService.verify(user);
     }
-    @PostMapping("/raiseIssue")
-    public ResponseEntity<IssueTable> addingIssue(@RequestBody RaiseIssuedto issue){
-        return issueservice.issue(issue);
+    @PostMapping(
+            value = "/raiseIssue",
+            consumes = "multipart/form-data"
+    )
+    public ResponseEntity<IssueTable> addingIssue(@RequestPart("issue") RaiseIssuedto dto, @RequestPart(value = "img", required = false) MultipartFile img){
+
+        try {
+            IssueTable issue = issueservice.issue(dto, img);
+            return ResponseEntity.ok(issue);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
     @GetMapping("/totalIssues")
-    public List<IssueTable> totalIssues(){
-        return issuerepo.findAll();
+    public List<totalIssuesdto> totalIssues(){
+        return issueservice.getAllIssues();
     }
 
     @GetMapping("/data")

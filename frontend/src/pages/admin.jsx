@@ -17,6 +17,7 @@ const Admin = () => {
     title: "",
     status: "",
     roomno: "",
+    img:"",
     refIds:[]
    
   });
@@ -81,7 +82,7 @@ const Admin = () => {
         "Content-Type": "application/json"
       }
     })
-    .then((res) => {setIssues(res.data);})
+    .then((res) => {setIssues(res.data); console.log(res.data); })
     .catch(console.error);
 
   },[BASE_URL,token])
@@ -171,17 +172,18 @@ const Admin = () => {
                          
                            setFormData({
                                 id: issue.id,
-                                refId:issue.user.refId,
+                                refId:issue.refId,
                                 title: issue.title,
                                 status: issue.status,
                                 roomno: issue.location,
+                                img:issue.imageData
                             });
                          }
 
                         }
                         
                     >
-                        <td>{issue.user.refId}</td>
+                        <td>{issue.refId}</td>
                         <td>{issue.title}</td>
                         <td>
                         <span className={`status ${issue.assigned}`}>
@@ -216,6 +218,7 @@ const Admin = () => {
                 title={formData.title}
                 statuss={formData.status}
                 roomno={formData.roomno}
+                img={formData.img}
                 text="staff"
                 onClose={() => setupdatetrue(false)}
                 onsucess={fetchAdminData}

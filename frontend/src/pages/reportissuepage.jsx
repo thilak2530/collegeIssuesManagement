@@ -14,35 +14,52 @@ const ReportIssuePage = () => {
     description: "",
   });
 
-  const submitting = (e) => {
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const submitting = async(e) => {
     e.preventDefault();
     const token=localStorage.getItem("token");
-
     const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
-    axios.post(`${BASE_URL}/raiseIssue`, formData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  })
-      .then((response) => {
-        alert("Successfully issue raised");
+    try{
 
-        // ✅ clear form
-        setFormData({
-          title: "",
-          category: "",
-          location: "",
-          description: "",
-        });
+      const data=new FormData();
+      data.append(
+        "issue",
+        new Blob([JSON.stringify(formData)], {
+          type: "application/json",
+        })
+      );
 
-        // ✅ navigate
-        navigate("/raise_issue");
-      })
-      .catch((error) => {
-        alert("Failed to raise issue");
-        console.error(error);
+      if (image) {
+        data.append("img", image);
+      }
+
+    await axios.post(`${BASE_URL}/raiseIssue`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    
+      // ✅ clear form
+      setFormData({
+        title: "",
+        category: "",
+        location: "",
+        description: "",
       });
+      setImage(null);
+      setPreview(null);
+      alert("issue raised")
+      // ✅ navigate
+      navigate("/raise_issue");
+
+    
+    }catch(error) {
+      alert("Failed to raise issue");
+      console.error(error);
+    };
   };
 
   return (
@@ -115,8 +132,33 @@ const ReportIssuePage = () => {
             />
           </div>
 
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/*"
+            capture="environment"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setImage(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+
+          {preview && (
+            <div className="image-preview">
+              <img src={preview} alt="Preview" />
+            </div>
+          )}
+
           <div className="form-buttons">
-            <button type="button" className="attach-button">
+            <button
+              type="button"
+              className="attach-button"
+              onClick={() => document.getElementById("imageInput").click()}
+            >
               Attach Image
             </button>
             <button type="submit" className="submit-button">

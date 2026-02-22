@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/update.css";
 
 
 
 const Update = (props) => {
+  const [showImage, setShowImage] = useState(false);
 
   return (
 
@@ -17,6 +18,7 @@ const Update = (props) => {
                 <th>Title</th>
                 <th>Status</th>
                 <th>Room No</th>
+                <th>image</th>
               </tr>
             </thead>
 
@@ -26,12 +28,50 @@ const Update = (props) => {
                 <td>{props.title}</td>
                 <td><span className={`status ${props.statuss}`}>{props.statuss}</span></td>
                 <td>{props.roomno}</td>
+                <td>
+                  {props.img ? (
+                    <button
+                      className="btn"
+                      onClick={() => setShowImage(true)}
+                    >
+                      View Image
+                    </button>
+                  ) : (
+                    "No Image"
+                  )}
+                </td>
               </tr>
 
               
             </tbody>
           </table>
         </div>
+
+
+        {showImage && (
+          <div
+            className="image-overlay"
+            onClick={() => setShowImage(false)}   // close only if clicking overlay
+          >
+            <div
+              className="image-modal"
+              onClick={(e) => e.stopPropagation()}  // stop closing when clicking image
+            >
+              <button
+                className="close-btn"
+                onClick={() => setShowImage(false)}
+              >
+                ❌
+              </button>
+
+              <img
+                src={`data:image/jpeg;base64,${props.img}`}
+                alt="full-issue"
+                className="fullscreen-img"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Status Update Section */}
         <div className="status-section">

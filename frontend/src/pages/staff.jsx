@@ -53,7 +53,8 @@ const DashboardPage = () => {
       title: "",
       status: "",
       roomno: "",
-      userid:""
+      userid:"",
+      img:""
     
     });
 
@@ -65,7 +66,7 @@ const DashboardPage = () => {
           }
           
         })
-        .then((res) => {setIssues(res.data)})
+        .then((res) => {setIssues(res.data);})
         .catch(console.error);
 
         axios.get(`${BASE_URL}/staffdetailboxs`,
@@ -164,6 +165,7 @@ const DashboardPage = () => {
                                 title: issue.title,
                                 status: issue.status,
                                 roomno: issue.roomno,
+                                img:issue.imageData
                             });
                          }
 
@@ -205,6 +207,7 @@ const DashboardPage = () => {
                 statuss={formData.status}
                 roomno={formData.roomno}
                 text="status"
+                img={formData.img}
                 setSelectedStaff={setSelectedStaff}
                 selectedStaff={selectedStaff}
                 onrequest={()=>{handleAssign()}}

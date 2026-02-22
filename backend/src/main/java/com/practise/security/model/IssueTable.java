@@ -13,6 +13,16 @@ public class IssueTable {
     private String category;
     private String location;
     private String assignedMem;
+    @Column(name = "image_data", columnDefinition = "BYTEA")
+    private byte[] imageData;
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
 
     public String getAssignedMem() {
         return assignedMem;
