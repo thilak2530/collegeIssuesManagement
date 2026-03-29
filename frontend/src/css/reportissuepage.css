@@ -95,3 +95,9 @@
 .submit-button:hover {
   background-color: #0284c7;
 }
+
+.image-preview img{
+    height:150px;
+    width:150px;
+    object-fit: cover;
+}

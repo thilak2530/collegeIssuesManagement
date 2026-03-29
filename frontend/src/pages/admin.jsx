@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "../css/adminpage.css";
 import Update from "./update";
 import { XCircle } from "lucide-react";
@@ -7,14 +7,18 @@ import axios from "axios";
 
 
 const Admin = () => {
-
+  const [refIds,setReIds]=useState([]);
+  const [selectedStaff, setSelectedStaff] = useState("");
   const token = localStorage.getItem("token");
   const BASE_URL = process.env.REACT_APP_BACKEND_URL;
   const [formData, setFormData] = useState({
     id: "",
+    refId:"",
     title: "",
     status: "",
     roomno: "",
+    img:"",
+    refIds:[]
    
   });
   const [numData, setNumData] = useState({
@@ -27,29 +31,73 @@ const Admin = () => {
   });
   const [issues,setIssues]=useState([])
 
+
+
+    const handleAssign = () => {
+      if (!selectedStaff) {
+        alert("Please select staff");
+        return;
+      }
+  
+      axios.patch(
+        `${BASE_URL}/issues/assign`,
+         {
+          issueId: formData.id,
+          assignedMem: selectedStaff
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
+      )
+      .then(() => {
+        alert("Staff assigned successfully");
+         
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Assignment failed");
+      });
+    };
+
+
+
+
+  const fetchAdminData = useCallback(() => {
+         axios.get(`${BASE_URL}/data`,{
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    .then((res) => {setNumData(res.data);})
+    .catch(console.error);
+
+
+    axios.get(`${BASE_URL}/totalIssues`,{
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    .then((res) => {setIssues(res.data); console.log(res.data); })
+    .catch(console.error);
+
+  },[BASE_URL,token])
+
   useEffect(()=>{
-
-     axios
-    .get(`${BASE_URL}/data`,{
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    })
-    .then((res) => {setNumData(res.data);console.log(res.data)})
-    .catch(console.error);
-
-
-     axios
-    .get(`${BASE_URL}/totalIssues`,{
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
-      }
-    })
-    .then((res) => {setIssues(res.data);})
-    .catch(console.error);
-  },[BASE_URL,token]);
+      fetchAdminData();
+       axios.get(`${BASE_URL}/staffRefIds`,{
+          headers:{
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        })
+        .then((res)=>{setReIds(res.data)})
+        .catch(err=>{console.error("Login failed:", err);})
+  },[fetchAdminData,BASE_URL,token]);
 
     const [updatetrue,setupdatetrue]=useState(false);
     
@@ -62,11 +110,7 @@ const Admin = () => {
             {/* Header */}
             <div className="dashboard-header">
             <h2 className="dashboard-title">Welcome, Admin</h2>
-            <div className="dashboard-icons">
-                <div className="icon-box">☰</div>
-                <div className="icon-box">✉</div>
-                <div className="profile-circle">J</div>
-            </div>
+
             </div>
 
             {/* Content */}
@@ -125,18 +169,21 @@ const Admin = () => {
                     <tr
                         key={issue.id}
                         onClick={()=>{setupdatetrue(true);
+                         
                            setFormData({
-                                id: issue.user.refId,
+                                id: issue.id,
+                                refId:issue.refId,
                                 title: issue.title,
                                 status: issue.status,
                                 roomno: issue.location,
+                                img:issue.imageData
                             });
                          }
 
                         }
                         
                     >
-                        <td>{issue.user.refId}</td>
+                        <td>{issue.refId}</td>
                         <td>{issue.title}</td>
                         <td>
                         <span className={`status ${issue.assigned}`}>
@@ -165,10 +212,19 @@ const Admin = () => {
           
             <Update 
                 
-                id={formData.id}
+              
+                refId={formData.refId}
+                refIds={refIds}
                 title={formData.title}
                 statuss={formData.status}
                 roomno={formData.roomno}
+                img={formData.img}
+                text="staff"
+                onClose={() => setupdatetrue(false)}
+                onsucess={fetchAdminData}
+                onrequest={()=>handleAssign()}
+                selectedStaff={selectedStaff}
+                setSelectedStaff={setSelectedStaff}
 
                 
             />
